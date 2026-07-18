@@ -11,16 +11,28 @@ function Form({route,method}){
     const [username,setUsername]=useState("")
     const [password,setPassword]=useState("")
     const [loading,setLoading]=useState(false)
+    const [errorMsg,setErrorMsg]=useState("")
     const navigate=useNavigate()
 
-    const name=method === "login" ? "Login":"Register"
+    const isLogin = method === "login"
+    const name = isLogin ? "Login" : "Register"
+
+    const getErrorMessage=(err)=>{
+        if(err.response?.data){
+            const data=err.response.data;
+            if(typeof data==="string") return data;
+            return Object.entries(data).map(([k,v])=>`${k}: ${Array.isArray(v)?v.join(", "):v}`).join(" | ");
+        }
+        return err.message || "Something went wrong";
+    };
 
     const handleSubmit = async (e) => {
         setLoading(true);
+        setErrorMsg("");
         e.preventDefault();
         try{
             const res = await api.post(route, {username,password})
-            if(method === "login"){
+            if(isLogin){
                 localStorage.setItem(ACCESS_TOKEN,res.data.access);
                 localStorage.setItem(REFRESH_TOKEN,res.data.refresh);
                 navigate("/")
@@ -30,33 +42,46 @@ function Form({route,method}){
             }
         }
         catch(error){
-            alert(error)
+            setErrorMsg(getErrorMessage(error))
         } finally{
             setLoading(false)
         }
     };
 
-    return <form onSubmit={handleSubmit} className="form-container">
+    return (
+    <form onSubmit={handleSubmit} className="form-container">
         <h1>{name}</h1>
+
+        {errorMsg && <div className="form-error">{errorMsg}</div>}
+
         <input 
             className="form-input"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="Enter username"
+            required
         />
-    <br />
          <input 
             className="form-input"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter password"
+            required
         />
-    <br />
-    {loading  && <LoadingIndicator />}
-    <button className="form-button" type="submit">{name}</button>
+        {loading  && <LoadingIndicator />}
+        <button className="form-button" type="submit" disabled={loading}>{name}</button>
+
+        <p className="form-switch">
+            {isLogin ? (
+                <>Don't have an account? <a href="/register">Register</a></>
+            ) : (
+                <>Already have an account? <a href="/login">Login</a></>
+            )}
+        </p>
     </form>
+    );
 
 }
 
