@@ -1,68 +1,192 @@
-/* Container for the whole page */
-div {
-  font-family: Arial, sans-serif;
+:root {
+  --color-bg: #eef1ea;
+  --color-surface: #ffffff;
+  --color-ink: #20281f;
+  --color-ink-soft: #5b6659;
+  --color-border: #d9ded2;
+  --color-primary: #2f6f5e;
+  --color-primary-hover: #24564a;
+  --color-update: #b8842e;
+  --color-update-hover: #96692a;
+  --color-delete: #b0442b;
+  --color-delete-hover: #8f3620;
+  --color-success: #2f8f5b;
+  --color-error: #b0442b;
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "IBM Plex Sans", -apple-system, sans-serif;
+  --radius: 10px;
 }
 
-/* Styles for the notes section */
-.notes-section {
-  margin-bottom: 2rem;
-}
-
-.notes-section h2 {
-  color: #333;
-  font-size: 24px;
-}
-
-/* Styles for individual notes - assuming your Note component has some container element */
-.note {
-  background-color: #f9f9f9;
-  border-left: 5px solid #007bff;
-  margin: 10px 0;
-  padding: 10px 15px;
-  border-radius: 5px;
-}
-
-/* Styles for the form section */
-form {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
-  margin: auto;
-}
-
-form h2 {
-  color: #333;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
-
-form label {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-form input,
-form textarea {
-  width: 100%;
-  padding: 8px;
-  margin: 8px 0 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+* {
   box-sizing: border-box;
 }
 
-form input[type="submit"] {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
+body {
+  margin: 0;
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
 }
 
-form input[type="submit"]:hover {
-  background-color: #0056b3;
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.page-header svg {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.page-header h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 32px;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.page-header .note-count {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-ink-soft);
+  margin-left: auto;
+}
+
+.create-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+
+.create-card h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+
+.create-card label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+  margin-bottom: 6px;
+}
+
+.create-card input[type="text"],
+.create-card textarea {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  color: var(--color-ink);
+  background: var(--color-bg);
+}
+
+.create-card input[type="text"]:focus,
+.create-card textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(47, 111, 94, 0.15);
+}
+
+.create-card textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.submit-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.submit-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.notes-section h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 18px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--color-ink-soft);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  font-size: 15px;
+}
+
+.status-banner {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+  z-index: 1000;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.status-success {
+  background-color: var(--color-success);
+}
+
+.status-error {
+  background-color: var(--color-error);
+}
+
+@media (max-width: 600px) {
+  .page-header {
+    flex-wrap: wrap;
+  }
+  .page-header .note-count {
+    margin-left: 0;
+    width: 100%;
+  }
+  .notes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }

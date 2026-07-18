@@ -1,33 +1,138 @@
 .note-container {
-  padding: 10px;
-  margin: 20px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 20px 18px 16px;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+  overflow: hidden;
+}
+
+.note-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background-image: radial-gradient(circle, var(--color-bg) 2.5px, transparent 2.5px);
+  background-size: 14px 8px;
+  background-position: center;
+}
+
+.note-container:hover {
+  box-shadow: 0 6px 18px rgba(32, 40, 31, 0.1);
+  transform: translateY(-2px);
 }
 
 .note-title {
-  color: #333;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 17px;
+  margin: 10px 0 6px;
+  color: var(--color-ink);
 }
 
 .note-content {
-  color: #666;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-ink-soft);
+  margin: 0 0 12px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .note-date {
-  color: #999;
-  font-size: 0.8rem;
+  color: #9aa393;
+  font-size: 12px;
+  margin: 0 0 14px;
+}
+
+.note-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.note-actions button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.update-button {
+  background-color: rgba(184, 132, 46, 0.12);
+  color: var(--color-update);
+}
+
+.update-button:hover {
+  background-color: var(--color-update);
+  color: white;
 }
 
 .delete-button {
-  background-color: #f44336; /* Red */
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  background-color: rgba(176, 68, 43, 0.1);
+  color: var(--color-delete);
 }
 
 .delete-button:hover {
-  background-color: #d32f2f; /* Darker red */
+  background-color: var(--color-delete);
+  color: white;
+}
+
+.save-button {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+.save-button:hover {
+  background-color: var(--color-primary-hover);
+}
+
+.cancel-button {
+  background-color: var(--color-bg);
+  color: var(--color-ink-soft);
+}
+
+.cancel-button:hover {
+  background-color: var(--color-border);
+}
+
+.note-edit-input,
+.note-edit-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 4px 0 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-ink);
+  background: var(--color-bg);
+  box-sizing: border-box;
+}
+
+.note-edit-input:focus,
+.note-edit-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(47, 111, 94, 0.15);
+}
+
+.note-edit-textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-container:hover {
+    transform: none;
+  }
 }
