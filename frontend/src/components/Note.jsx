@@ -5,6 +5,11 @@ import { PencilIcon, TrashIcon, CheckIcon, XIcon } from "./Icons";
 
 function Note({note,onDelete,onUpdate}){
     const formattedDate=new Date(note.created_at).toLocaleDateString("en-US")
+     const wasEdited = note.updated_at &&
+        (new Date(note.updated_at).getTime() - new Date(note.created_at).getTime()) > 1000;
+    const editedDate = wasEdited ? new Date(note.updated_at).toLocaleDateString("en-US") : null;
+
+
     const [isEditing,setIsEditing]=useState(false)
     const [editTitle,setEditTitle]=useState(note.title)
     const [editContent,setEditContent]=useState(note.content)
@@ -47,7 +52,10 @@ function Note({note,onDelete,onUpdate}){
         <div className="note-container">
             <p className="note-title">{note.title}</p>
             <p className="note-content">{note.content}</p>
-            <p className="note-date">{formattedDate}</p>
+            <p className="note-date">
+                {formattedDate}
+                {wasEdited && <span className="note-edited"> · updated {editedDate}</span>}
+            </p>
             <div className="note-actions">
                 <button className="update-button" onClick={()=>setIsEditing(true)}>
                     Update Note

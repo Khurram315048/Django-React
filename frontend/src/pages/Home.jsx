@@ -1,9 +1,9 @@
-import {useState,useEffect,useRef} from "react";
+import {useState,useEffect,useRef,useMemo} from "react";
 import {useNavigate} from "react-router-dom";
 import api from "../api";
 import Note from "../components/Note";
-import {PlusIcon, NotebookIcon,LogoutIcon} from "../components/Icons";
-import {ACCESS_TOKEN,REFRESH_TOKEN} from "../constants";
+import { PlusIcon, NotebookIcon, LogoutIcon, SearchIcon, CloseIcon } from "../components/Icons";
+import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Home.css";
 
 
@@ -14,9 +14,9 @@ function Home(){
     const[content,setContent]=useState("");
     const[title,setTitle]=useState("");
     const[status,setStatus]=useState(null);
+    const[searchQuery,setSearchQuery]=useState("");
     const statusTimeoutRef=useRef(null);
     const navigate=useNavigate();
-
 
     useEffect(() => {
         getNotes();
@@ -94,6 +94,17 @@ function Home(){
        
     };
 
+    const filteredNotes = useMemo(()=>{
+        const terms = searchQuery.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        if(terms.length === 0) return notes;
+        return notes.filter((note)=>{
+            const haystack = `${note.title} ${note.content}`.toLowerCase();
+            return terms.every((term)=>haystack.includes(term));
+        });
+    },[notes,searchQuery]);
+
+    const isSearching = searchQuery.trim().length > 0;
+
 
     return (
     <div className="page">
@@ -107,10 +118,9 @@ function Home(){
             <NotebookIcon />
             <h1>My Notes</h1>
             <span className="note-count">{notes.length} {notes.length===1?"note":"notes"}</span>
-             <button className="logout-button" onClick={handleLogout} aria-label="Log out">
+            <button className="logout-button" onClick={handleLogout} aria-label="Log out">
                 <LogoutIcon /> Log out
             </button>
-        
         </header>
 
         <section className="create-card">
@@ -139,12 +149,44 @@ function Home(){
         </section>
 
         <section className="notes-section">
-            <h2>Your notes</h2>
+            <div className="notes-section-header">
+                <h2>Your notes</h2>
+                <div className="search-bar">
+                    <SearchIcon className="search-icon" />
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="Search notes..."
+                        value={searchQuery}
+                        onChange={(e)=>setSearchQuery(e.target.value)}
+                        aria-label="Search notes by title or content"
+                    />
+                    {isSearching && (
+                        <button
+                            className="search-clear"
+                            onClick={()=>setSearchQuery("")}
+                            aria-label="Clear search"
+                            type="button"
+                        >
+                            <CloseIcon />
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {isSearching && (
+                <p className="search-result-count">
+                    {filteredNotes.length} {filteredNotes.length===1?"result":"results"} for "{searchQuery.trim()}"
+                </p>
+            )}
+
             {notes.length === 0 ? (
                 <div className="empty-state">No notes yet — write your first one above.</div>
+            ) : filteredNotes.length === 0 ? (
+                <div className="empty-state">No notes match "{searchQuery.trim()}" — try different keywords.</div>
             ) : (
                 <div className="notes-grid">
-                    {notes.map((note)=>(
+                    {filteredNotes.map((note)=>(
                         <Note note={note} onDelete={deleteNote} onUpdate={updateNote} key={note.id}/>
                     ))}
                 </div>

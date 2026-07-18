@@ -136,3 +136,8 @@
     transform: none;
   }
 }
+
+.note-edited {
+  font-style: italic;
+  color: #9aa393;
+}
