@@ -1,7 +1,9 @@
 import {useState,useEffect,useRef} from "react";
+import {useNavigate} from "react-router-dom";
 import api from "../api";
 import Note from "../components/Note";
-import { PlusIcon, NotebookIcon } from "../components/Icons";
+import {PlusIcon, NotebookIcon,LogoutIcon} from "../components/Icons";
+import {ACCESS_TOKEN,REFRESH_TOKEN} from "../constants";
 import "../styles/Home.css";
 
 
@@ -13,6 +15,8 @@ function Home(){
     const[title,setTitle]=useState("");
     const[status,setStatus]=useState(null);
     const statusTimeoutRef=useRef(null);
+    const navigate=useNavigate();
+
 
     useEffect(() => {
         getNotes();
@@ -32,6 +36,12 @@ function Home(){
             return Object.entries(data).map(([k,v])=>`${k}: ${Array.isArray(v)?v.join(", "):v}`).join(" | ");
         }
         return err.message || "Something went wrong";
+    };
+
+    const handleLogout=()=>{
+        localStorage.removeItem(ACCESS_TOKEN);
+        localStorage.removeItem(REFRESH_TOKEN);
+        navigate("/login");
     };
 
     const getNotes = () =>{
@@ -97,6 +107,10 @@ function Home(){
             <NotebookIcon />
             <h1>My Notes</h1>
             <span className="note-count">{notes.length} {notes.length===1?"note":"notes"}</span>
+             <button className="logout-button" onClick={handleLogout} aria-label="Log out">
+                <LogoutIcon /> Log out
+            </button>
+        
         </header>
 
         <section className="create-card">
