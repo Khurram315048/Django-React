@@ -294,3 +294,48 @@ body {
     width: 100%;
   }
 }
+
+
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.status-undo {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.status-undo:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+
+.trash-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-ink-soft);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+.trash-link:hover {
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+}

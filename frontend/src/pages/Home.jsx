@@ -2,7 +2,8 @@ import {useState,useEffect,useRef,useMemo} from "react";
 import {useNavigate} from "react-router-dom";
 import api from "../api";
 import Note from "../components/Note";
-import { PlusIcon, NotebookIcon, LogoutIcon, SearchIcon, CloseIcon } from "../components/Icons";
+import { PlusIcon, NotebookIcon, LogoutIcon, SearchIcon, CloseIcon, TrashBinIcon } from "../components/Icons";
+import { Link } from "react-router-dom";
 import { ACCESS_TOKEN, REFRESH_TOKEN } from "../constants";
 import "../styles/Home.css";
 
@@ -23,10 +24,10 @@ function Home(){
         return () => clearTimeout(statusTimeoutRef.current);
     },[])
 
-    const showStatus=(type,message)=>{
+    const showStatus=(type,message,undoAction=null)=>{
         clearTimeout(statusTimeoutRef.current);
-        setStatus({type,message});
-        statusTimeoutRef.current=setTimeout(()=>setStatus(null),3500);
+        setStatus({type,message,undoAction});
+        statusTimeoutRef.current=setTimeout(()=>setStatus(null), undoAction ? 5000 : 3500);
     };
 
     const getErrorMessage=(err)=>{
@@ -55,16 +56,27 @@ function Home(){
 
 
     const deleteNote=(id) =>{
-        if(!window.confirm("Delete this note?")) return;
         api
         .delete(`/api/notes/delete/${id}/`)
         .then((res)=>{
-            if(res.status===204) showStatus("success","Note deleted");
+            if(res.status===204){
+                showStatus("success","Note deleted", ()=>restoreNote(id));
+            }
             else showStatus("error","Failed to delete note");
             getNotes();
         }).catch((error) => showStatus("error", getErrorMessage(error)));
+    };
 
-       
+    const restoreNote=(id)=>{
+        clearTimeout(statusTimeoutRef.current);
+        setStatus(null);
+        api
+        .patch(`/api/notes/restore/${id}/`,{})
+        .then((res)=>{
+            if(res.status===200) showStatus("success","Note restored");
+            else showStatus("error","Failed to restore note");
+            getNotes();
+        }).catch((error)=>showStatus("error", getErrorMessage(error)));
     };
 
     const updateNote=(id,updatedFields)=>{
@@ -111,6 +123,9 @@ function Home(){
         {status && (
             <div className={`status-banner status-${status.type}`}>
                 {status.message}
+                {status.undoAction && (
+                    <button className="status-undo" onClick={status.undoAction}>Undo</button>
+                )}
             </div>
         )}
 
@@ -118,6 +133,9 @@ function Home(){
             <NotebookIcon />
             <h1>My Notes</h1>
             <span className="note-count">{notes.length} {notes.length===1?"note":"notes"}</span>
+            <Link to="/trash" className="trash-link" aria-label="View trash">
+                <TrashBinIcon /> Trash
+            </Link>
             <button className="logout-button" onClick={handleLogout} aria-label="Log out">
                 <LogoutIcon /> Log out
             </button>
