@@ -10,13 +10,14 @@ function Form({route,method}){
 
     const [username,setUsername]=useState("")
     const [password,setPassword]=useState("")
+    const [email,setEmail]=useState("")
     const [loading,setLoading]=useState(false)
     const [errorMsg,setErrorMsg]=useState("")
     const navigate=useNavigate()
 
-    const isLogin = method === "login"
-    const name = isLogin ? "Login" : "Register"
-
+    const isLogin=method === "login"
+    const name= isLogin ? "Login" : "Register"
+    
     const getErrorMessage=(err)=>{
         if(err.response?.data){
             const data=err.response.data;
@@ -31,7 +32,7 @@ function Form({route,method}){
         setErrorMsg("");
         e.preventDefault();
         try{
-            const res = await api.post(route, {username,password})
+            const res = await api.post(route, isLogin ? {email,password} : {username,password,email})
             if(isLogin){
                 localStorage.setItem(ACCESS_TOKEN,res.data.access);
                 localStorage.setItem(REFRESH_TOKEN,res.data.refresh);
@@ -57,9 +58,9 @@ function Form({route,method}){
         <input 
             className="form-input"
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Enter username"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email"
             required
         />
          <input 
@@ -70,6 +71,16 @@ function Form({route,method}){
             placeholder="Enter password"
             required
         />
+        {!isLogin && (
+                <input
+                    className="form-input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter email"
+                    required
+                />
+            )}
         {loading  && <LoadingIndicator />}
         <button className="form-button" type="submit" disabled={loading}>{name}</button>
 
@@ -80,6 +91,11 @@ function Form({route,method}){
                 <>Already have an account? <a href="/login">Login</a></>
             )}
         </p>
+        {isLogin && (
+            <p className="form-switch">
+                <a href="/forgot-password">Forgot password?</a>
+            </p>
+        )}
     </form>
     );
 

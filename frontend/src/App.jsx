@@ -6,7 +6,8 @@ import Trash from "./pages/Trash"
 import NotFound from "./pages/NotFound"
 import Register from "./pages/Register"
 import ProtectedRoute from "./components/ProtectedRoute"
-
+import ForgotPassword from "./pages/ForgotPassword"
+import ResetPassword from "./pages/ResetPassword"
 
 
 function Logout(){
@@ -29,7 +30,8 @@ function App() {
         <Route path="/"  element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/trash"  element={<ProtectedRoute><Trash /></ProtectedRoute>} />
         <Route path="/login"  element={<Login />}/>
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:uid/:token" element={<ResetPassword />} />
         <Route path="/register"  element={<RegisterAndLogout />}/>
 
         <Route path="*"  element={<NotFound />}/>
